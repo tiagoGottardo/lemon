@@ -20,16 +20,20 @@ exports.signup = async (req, res) => {
       password: hashedPassword,
     })
 
-    const foundRole = await Role.findOne({ name: "user" }).exec()
+    if(req.body.roles) {
+      const foundRoles = await Role.find({ name: { $in: req.body.roles } }).exec()
 
-    if (!foundRole) {
-      return res.status(500).send({ message: "Role 'user' not found!" })
+      user.roles = foundRoles.map(role => role._id)
+      await user.save()
+    } else {
+      const foundRoles = await Role.find({ name: "user" }).exec()
+
+      user.roles = [foundRoles._id]
+      await user.save()
     }
 
-    user.roles = [foundRole._id]
-    await user.save()
-
     res.status(200).send({ message: "User was registered successfully!" })
+  
   } catch (err) {
     console.error("Error:", err)
     res.status(500).send({ message: err })
