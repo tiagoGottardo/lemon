@@ -6,6 +6,7 @@ require('dotenv').config()
 
 const PORT = process.env.PORT
 const DB_URL = process.env.NODE_ENV === "test" ? process.env.DATABASE_TEST_URL : process.env.DATABASE_URL
+// const DB_URL = process.env.DATABASE_TEST_URL
 
 var corsOptions = {
   origin: `http://localhost:${PORT}`
@@ -40,11 +41,11 @@ try {
 require('./app/routes/auth.routes')(app)
 require('./app/routes/user.routes')(app)
 
-app.listen(PORT, () => {
-  if(process.env.NODE_ENV !== "test") {
+if(process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`)
-  }
-})
+  })
+}
 
 async function setRoles() {
   try {
