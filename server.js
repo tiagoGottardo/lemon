@@ -30,6 +30,7 @@ try {
  
     if(process.env.NODE_ENV === "test") {
       script.cleanTestDocuments()
+      script.setUsersTestCase()
     }
 
     setRoles()
