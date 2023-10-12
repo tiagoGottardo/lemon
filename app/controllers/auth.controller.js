@@ -20,14 +20,13 @@ exports.signup = async (req, res) => {
       password: hashedPassword,
     })
 
-    if(req.body.roles) {
+    if(req.body.roles[0]) {
       const foundRoles = await Role.find({ name: { $in: req.body.roles } }).exec()
-
       user.roles = foundRoles.map(role => role._id)
       await user.save()
     } else {
       const foundRoles = await Role.find({ name: "user" }).exec()
-
+      
       user.roles = [foundRoles._id]
       await user.save()
     }
@@ -57,7 +56,7 @@ exports.signin = async (req, res) => {
       })
     }
 
-    const token = jwt.sign({ id: user.id }, SECRET, {
+    const token = jwt.sign({ id: user._id }, SECRET, {
       algorithm: 'HS256',
       allowInsecureKeySizes: true,
       expiresIn: 86400, // 24 hours
