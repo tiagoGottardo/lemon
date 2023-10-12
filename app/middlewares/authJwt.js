@@ -23,13 +23,22 @@ verifyToken = (req, res, next) => {
   })
 }
 
+verifyUserExists = async (req, res, next) => {
+  const user = await User.findById(req.userId) 
+
+  if (!user) {
+    return res.status(404).send({ message: "User not found" })
+  }
+
+  req.user = user
+  
+  next()
+}
+
 isAdmin = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId)
+    const user = req.user 
 
-    if (!user) {
-      return res.status(404).send({ message: "User not found" })
-    }
 
     const roles = await Role.find({ _id: { $in: user.roles } })
 
@@ -52,11 +61,7 @@ isAdmin = async (req, res, next) => {
 
 isModerator = async (req, res, next) => {
   try {
-    const user = await User.findById(req.userId)
-
-    if (!user) {
-      return res.status(404).send({ message: "User not found" })
-    }
+    const user = req.user 
 
     const roles = await Role.find({ _id: { $in: user.roles } })
 
@@ -78,6 +83,7 @@ isModerator = async (req, res, next) => {
 }
 
 const authJwt = {
+  verifyUserExists,
   verifyToken,
   isAdmin,
   isModerator
