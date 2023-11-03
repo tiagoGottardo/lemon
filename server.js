@@ -6,10 +6,11 @@ require('dotenv').config()
 
 const PORT = process.env.PORT
 const DB_URL = process.env.NODE_ENV === "test" ? process.env.DATABASE_TEST_URL : process.env.DATABASE_URL
+const ORIGIN = process.env.ORIGIN
 // const DB_URL = process.env.DATABASE_TEST_URL
 
 var corsOptions = {
-  origin: `http://localhost:${PORT}`
+  origin: `http://localhost:${ORIGIN}`
 }
 
 app.use(cors(corsOptions))
