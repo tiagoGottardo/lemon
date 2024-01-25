@@ -28,14 +28,13 @@ try {
       useNewUrlParser: true,
       useUnifiedTopology: true
     })
- 
-    if(process.env.NODE_ENV === "test") {
-      script.cleanTestDocuments()
-      script.setUsersTestCase()
-    }
+  if (process.env.NODE_ENV === "test") {
+    script.cleanTestDocuments()
+    script.setUsersTestCase()
+  }
 
-    setRoles()
-} catch(err) {
+  setRoles()
+} catch (err) {
   console.error("Connection error", err)
   process.exit()
 }
@@ -43,7 +42,7 @@ try {
 require('./app/routes/auth.routes')(app)
 require('./app/routes/user.routes')(app)
 
-if(process.env.NODE_ENV !== "test") {
+if (process.env.NODE_ENV !== "test") {
   app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}.`)
   })

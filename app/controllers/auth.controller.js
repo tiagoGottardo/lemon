@@ -20,19 +20,19 @@ exports.signup = async (req, res) => {
       password: hashedPassword,
     })
 
-    if(req.body.roles[0]) {
+    if (req.body.roles[0]) {
       const foundRoles = await Role.find({ name: { $in: req.body.roles } }).exec()
       user.roles = foundRoles.map(role => role._id)
       await user.save()
     } else {
       const foundRoles = await Role.find({ name: "user" }).exec()
-      
+
       user.roles = [foundRoles._id]
       await user.save()
     }
 
     res.status(200).send({ message: "User was registered successfully!" })
-  
+
   } catch (err) {
     console.error("Error:", err)
     res.status(500).send({ message: err })
@@ -45,7 +45,10 @@ exports.signin = async (req, res) => {
 
 
     if (!user) {
-      return res.status(404).send({ message: "Invalid email or password." })
+      return res.status(401).send({
+        accessToken: null,
+        message: "Invalid email or password."
+      })
     }
 
     const passwordIsValid = bcrypt.compareSync(req.body.password, user.password)
